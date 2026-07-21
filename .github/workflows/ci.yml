@@ -1,4 +1,4 @@
-name: Test component build
+name: CI
 
 on:
   pull_request:
@@ -8,16 +8,27 @@ on:
 
 jobs:
   build:
+    name: Test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.13"
+
+      - name: Cache ESPHome build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            yaml/.esphome
+          key: ${{ runner.os }}-esphome-${{ hashFiles('yaml/**/*.yaml', 'esphome/components/**/*.py', 'esphome/components/**/*.cpp', 'esphome/components/**/*.h') }}
+          restore-keys: |
+            ${{ runner.os }}-esphome-
 
       - name: Install ESPHome
         run: |

@@ -2,6 +2,9 @@
 
 ![image](https://github.com/Samuel-0-0/dc1-esphome-home-assistant/blob/master/image/%E4%BA%A7%E5%93%81%E5%9B%BE2.jpg?raw=true)
 
+## Reborn
+有了AI的加持, 这个项目可以重启了, 让AI帮忙维护这个项目.
+
 ## WHY
 众所周知的原因，斐讯服务器已经不能正常访问，插座的APP控制已经无法正常实现，需要有另外的方式实现插座的控制。
 
@@ -10,7 +13,7 @@
 这次要实现的是通过一个自定义的固件，来完整实现DC1联网控制。
 
 ## 为什么选择ESPHome制作固件
-[ESPHome](https://esphome.io/)是一个只需写几行配置文件就可以实现ESP8266/ESP32接入智能家居系统的强大开源项目。其极高的可扩展性和易用性是本次选择的主要原因。 
+[ESPHome](https://esphome.io/)是一个只需写几行配置文件就可以实现ESP8266/ESP32接入智能家居系统的强大开源项目。其极高的可扩展性和易用性是本次选择的主要原因。
 
 ## 已支持接入的开源智能家居平台
 以下排序随机，不分优劣。合适自己的就好。
@@ -22,8 +25,8 @@ Home Assistant 是一款基于 Python 的智能家居开源系统，支持众多
 - [关于本固件的讨论帖](https://bbs.hassbian.com/thread-6628-1-1.html)
 
 #### 接入方法
-1. 按照[TTL接线方法](https://github.com/Samuel-0-0/phicomm_dc1-esphome/tree/master/cookbook)接线
-2. 按照[固件编译及刷固件方法](https://github.com/Samuel-0-0/phicomm_dc1-esphome/tree/master/yaml)更新固件
+1. 按照[TTL接线方法](https://github.com/duchenpaul/phicomm_dc1-esphome/tree/main/cookbook)接线
+2. 按照[固件编译及刷固件方法](https://github.com/duchenpaul/phicomm_dc1-esphome/tree/main/yaml)更新固件
 3. Home Assistant中[设置]-[集成]-添加esphome组件
 4. 输入dc1对应的ip地址
 5. 配置lovelace

@@ -21,6 +21,15 @@ external_components:
       path: ../esphome/components
     components: [cat9554]
 
+# If the local component path above is not available, replace the entry above with the following:
+# external_components:
+#   - source:
+#       type: git
+#       url: https://github.com/duchenpaul/phicomm_dc1-esphome
+#       ref: master
+#     components: [cat9554]
+#     refresh: 1d
+
 wifi:
   ssid: $wifi_ssid
   password: $wifi_password
@@ -57,8 +66,6 @@ safe_mode:
 #----------------------WEB后台----------------------
 web_server:
   port: 80
-  css_url: https://esphome.io/_static/webserver-v1.min.css
-  js_url: https://esphome.io/_static/webserver-v1.min.js
 #----------------------------------------------------
 
 #----------------------深度睡眠----------------------
