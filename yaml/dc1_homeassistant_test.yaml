@@ -1,0 +1,22 @@
+packages:
+  dc1: !include library/dc1.yaml
+
+#--------------------- 只需要改这下面的内容 ---------------------
+substitutions:
+  #设备名称(多个dc1改成不一样的)
+  device_name: phicomm_dc1_35122
+  #WiFi_SSID名称
+  wifi_ssid: !secret wifi_ssid
+  #WiFi密码
+  wifi_password: !secret wifi_password
+  #如果SSID是隐藏的，设置为true
+  wifi_fast_connect: "false"
+  #WiFi离线多久后重启设备，秒s/分钟min/小时h，不需要此功能设置为0s
+  wifi_reboot_timeout: 0s
+  #OTA密码
+  ota_password: !secret ota_password
+  #与客户端（如Home Assistant）失去连接多久后重启设备，秒s/分钟min/小时h，不需要此功能设置为0s
+  api_reboot_timeout: 0s
+  #点击按键识别的最大时长
+  key_click_max_length: 350ms
+#--------------------- 只需要改这上面的内容 ---------------------

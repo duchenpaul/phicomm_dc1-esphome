@@ -6,7 +6,7 @@ namespace cat9554 {
 
 static const char *TAG = "cat9554";
 
-static void ICACHE_RAM_ATTR HOT gpio_intr(bool *need_update_gpio) { *need_update_gpio = true; }
+static void IRAM_ATTR HOT gpio_intr(bool *need_update_gpio) { *need_update_gpio = true; }
 
 void CAT9554Component::setup() {
   if (!this->read_gpio_()) {
@@ -18,7 +18,7 @@ void CAT9554Component::setup() {
   if (this->enable_irq_) {
     this->irq_pin_->setup();
     this->isr_ = this->irq_pin_->to_isr();
-    this->irq_pin_->attach_interrupt(gpio_intr, &this->update_gpio_, FALLING);
+    this->irq_pin_->attach_interrupt(gpio_intr, &this->update_gpio_, gpio::INTERRUPT_FALLING_EDGE);
     this->update_gpio_ = false;
   }
   this->read_gpio_();
@@ -68,7 +68,7 @@ bool CAT9554Component::read_gpio_() {
 
   bool success;
   uint8_t data;
-  success = this->read_byte(INPUT_REG, &data, 1);
+  success = this->read_byte(INPUT_REG, &data);
   if (!success) {
     this->status_set_warning();
     return false;
@@ -116,7 +116,7 @@ bool CAT9554Component::read_config_() {
   if (this->is_failed())
     return false;
 
-  if (!this->read_byte(CONFIG_REG, &data, 1)) {
+  if (!this->read_byte(CONFIG_REG, &data)) {
     this->status_set_warning();
     return false;
   }
@@ -127,12 +127,21 @@ bool CAT9554Component::read_config_() {
 }
 float CAT9554Component::get_setup_priority() const { return setup_priority::IO; }
 
-void CAT9554GPIOPin::setup() { this->pin_mode(this->mode_); }
+void CAT9554GPIOPin::setup() { this->pin_mode(this->flags_); }
 bool CAT9554GPIOPin::digital_read() { return this->parent_->digital_read(this->pin_) != this->inverted_; }
 void CAT9554GPIOPin::digital_write(bool value) { this->parent_->digital_write(this->pin_, value != this->inverted_); }
-void CAT9554GPIOPin::pin_mode(uint8_t mode) { this->parent_->pin_mode(this->pin_, mode); }
+void CAT9554GPIOPin::pin_mode(gpio::Flags flags) {
+  this->flags_ = flags;
+  if ((flags & gpio::FLAG_OUTPUT) != gpio::FLAG_NONE) {
+    this->parent_->pin_mode(this->pin_, CAT9554_OUTPUT);
+  } else {
+    this->parent_->pin_mode(this->pin_, CAT9554_INPUT);
+  }
+}
+gpio::Flags CAT9554GPIOPin::get_flags() const { return this->flags_; }
 CAT9554GPIOPin::CAT9554GPIOPin(CAT9554Component *parent, uint8_t pin, uint8_t mode, bool inverted)
-    : GPIOPin(pin, mode, inverted), parent_(parent) {}
+    : parent_(parent), pin_(pin),
+      flags_(mode == CAT9554_OUTPUT ? gpio::FLAG_OUTPUT : gpio::FLAG_INPUT), inverted_(inverted) {}
 
 }  // namespace cat9554
 }  // namespace esphome

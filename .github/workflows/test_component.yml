@@ -1,0 +1,49 @@
+name: Test component build
+
+on:
+  pull_request:
+    branches:
+      - "**"
+  merge_group:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install ESPHome
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install esphome==2026.7.0
+
+      - name: Build firmware
+        working-directory: yaml
+        env:
+          PLATFORMIO_DISABLE_PROGRESSBAR: "true"
+        run: |
+          esphome compile dc1_homeassistant_test.yaml
+
+      - name: Collect firmware artifact
+        run: |
+          mkdir -p artifacts
+          firmware_path=$(find yaml/.esphome/build -name firmware.bin -print -quit)
+          if [ -z "$firmware_path" ]; then
+            echo "Firmware binary not found" >&2
+            exit 1
+          fi
+          cp "$firmware_path" artifacts/dc1_homeassistant_test.bin
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dc1_homeassistant_test-firmware
+          path: artifacts/dc1_homeassistant_test.bin
+          if-no-files-found: error
